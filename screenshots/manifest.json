@@ -1,0 +1,338 @@
+[
+  {
+    "screenId": "S01",
+    "screenName": "Landing",
+    "route": "/",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S01-landing-mobile.png",
+    "figmaFrameName": "01 Landing"
+  },
+  {
+    "screenId": "S02",
+    "screenName": "Sign-in — Phone",
+    "route": "/sign-in",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S02-sign-in-phone-mobile.png",
+    "figmaFrameName": "02 Sign-in — Phone"
+  },
+  {
+    "screenId": "S03",
+    "screenName": "Sign-in — OTP",
+    "route": "/sign-in/verify",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S03-sign-in-otp-mobile.png",
+    "figmaFrameName": "03 Sign-in — OTP"
+  },
+  {
+    "screenId": "S04",
+    "screenName": "Dashboard",
+    "route": "/app",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S04-dashboard-mobile.png",
+    "figmaFrameName": "04 Dashboard"
+  },
+  {
+    "screenId": "S05",
+    "screenName": "Settings",
+    "route": "/app/settings",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S05-settings-mobile.png",
+    "figmaFrameName": "05 Settings"
+  },
+  {
+    "screenId": "S06",
+    "screenName": "Connection Status",
+    "route": "/app/settings/connection",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S06-connection-status-mobile.png",
+    "figmaFrameName": "06 Connection Status"
+  },
+  {
+    "screenId": "S07",
+    "screenName": "Onboarding — Welcome",
+    "route": "/app/onboarding",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S07-onboarding-welcome-mobile.png",
+    "figmaFrameName": "07 Onboarding — Welcome"
+  },
+  {
+    "screenId": "S08",
+    "screenName": "Onboarding — Philosophy",
+    "route": "/app/onboarding/philosophy",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S08-onboarding-philosophy-mobile.png",
+    "figmaFrameName": "08 Onboarding — Philosophy"
+  },
+  {
+    "screenId": "S09",
+    "screenName": "Onboarding — Family",
+    "route": "/app/onboarding/family",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S09-onboarding-family-mobile.png",
+    "figmaFrameName": "09 Onboarding — Family"
+  },
+  {
+    "screenId": "S10",
+    "screenName": "Onboarding — Consent",
+    "route": "/app/onboarding/consent",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S10-onboarding-consent-mobile.png",
+    "figmaFrameName": "10 Onboarding — Consent"
+  },
+  {
+    "screenId": "S11",
+    "screenName": "Family — List",
+    "route": "/app/family",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S11-family-list-mobile.png",
+    "figmaFrameName": "11 Family — List"
+  },
+  {
+    "screenId": "S12",
+    "screenName": "Family — Child",
+    "route": "/app/family/child/demo-child-id",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S12-family-child-mobile.png",
+    "figmaFrameName": "12 Family — Child"
+  },
+  {
+    "screenId": "S13",
+    "screenName": "Family — Contact",
+    "route": "/app/family/contact/demo-contact-id",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S13-family-contact-mobile.png",
+    "figmaFrameName": "13 Family — Contact"
+  },
+  {
+    "screenId": "S14",
+    "screenName": "Privacy",
+    "route": "/app/settings/privacy",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S14-privacy-mobile.png",
+    "figmaFrameName": "14 Privacy"
+  },
+  {
+    "screenId": "S15",
+    "screenName": "Briefings",
+    "route": "/app/briefings",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S15-briefings-mobile.png",
+    "figmaFrameName": "15 Briefings"
+  },
+  {
+    "screenId": "S16",
+    "screenName": "Briefing Detail",
+    "route": "/app/briefings/demo-briefing-id",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S16-briefing-detail-mobile.png",
+    "figmaFrameName": "16 Briefing Detail"
+  },
+  {
+    "screenId": "S17",
+    "screenName": "Calendar",
+    "route": "/app/calendar",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S17-calendar-mobile.png",
+    "figmaFrameName": "17 Calendar"
+  },
+  {
+    "screenId": "S18",
+    "screenName": "Outbound List",
+    "route": "/app/outbound",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S18-outbound-list-mobile.png",
+    "figmaFrameName": "18 Outbound List"
+  },
+  {
+    "screenId": "S19",
+    "screenName": "Outbound Detail",
+    "route": "/app/outbound/demo-action-id",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S19-outbound-detail-mobile.png",
+    "figmaFrameName": "19 Outbound Detail"
+  },
+  {
+    "screenId": "S20",
+    "screenName": "Philosophy Settings",
+    "route": "/app/settings/philosophy",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S20-philosophy-settings-mobile.png",
+    "figmaFrameName": "20 Philosophy Settings"
+  },
+  {
+    "screenId": "S21",
+    "screenName": "Notifications",
+    "route": "/app/settings/notifications",
+    "viewport": "mobile",
+    "file": "screenshots\\mobile\\S21-notifications-mobile.png",
+    "figmaFrameName": "21 Notifications"
+  },
+  {
+    "screenId": "S01",
+    "screenName": "Landing",
+    "route": "/",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S01-landing-desktop.png",
+    "figmaFrameName": "01 Landing"
+  },
+  {
+    "screenId": "S02",
+    "screenName": "Sign-in — Phone",
+    "route": "/sign-in",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S02-sign-in-phone-desktop.png",
+    "figmaFrameName": "02 Sign-in — Phone"
+  },
+  {
+    "screenId": "S03",
+    "screenName": "Sign-in — OTP",
+    "route": "/sign-in/verify",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S03-sign-in-otp-desktop.png",
+    "figmaFrameName": "03 Sign-in — OTP"
+  },
+  {
+    "screenId": "S04",
+    "screenName": "Dashboard",
+    "route": "/app",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S04-dashboard-desktop.png",
+    "figmaFrameName": "04 Dashboard"
+  },
+  {
+    "screenId": "S05",
+    "screenName": "Settings",
+    "route": "/app/settings",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S05-settings-desktop.png",
+    "figmaFrameName": "05 Settings"
+  },
+  {
+    "screenId": "S06",
+    "screenName": "Connection Status",
+    "route": "/app/settings/connection",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S06-connection-status-desktop.png",
+    "figmaFrameName": "06 Connection Status"
+  },
+  {
+    "screenId": "S07",
+    "screenName": "Onboarding — Welcome",
+    "route": "/app/onboarding",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S07-onboarding-welcome-desktop.png",
+    "figmaFrameName": "07 Onboarding — Welcome"
+  },
+  {
+    "screenId": "S08",
+    "screenName": "Onboarding — Philosophy",
+    "route": "/app/onboarding/philosophy",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S08-onboarding-philosophy-desktop.png",
+    "figmaFrameName": "08 Onboarding — Philosophy"
+  },
+  {
+    "screenId": "S09",
+    "screenName": "Onboarding — Family",
+    "route": "/app/onboarding/family",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S09-onboarding-family-desktop.png",
+    "figmaFrameName": "09 Onboarding — Family"
+  },
+  {
+    "screenId": "S10",
+    "screenName": "Onboarding — Consent",
+    "route": "/app/onboarding/consent",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S10-onboarding-consent-desktop.png",
+    "figmaFrameName": "10 Onboarding — Consent"
+  },
+  {
+    "screenId": "S11",
+    "screenName": "Family — List",
+    "route": "/app/family",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S11-family-list-desktop.png",
+    "figmaFrameName": "11 Family — List"
+  },
+  {
+    "screenId": "S12",
+    "screenName": "Family — Child",
+    "route": "/app/family/child/demo-child-id",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S12-family-child-desktop.png",
+    "figmaFrameName": "12 Family — Child"
+  },
+  {
+    "screenId": "S13",
+    "screenName": "Family — Contact",
+    "route": "/app/family/contact/demo-contact-id",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S13-family-contact-desktop.png",
+    "figmaFrameName": "13 Family — Contact"
+  },
+  {
+    "screenId": "S14",
+    "screenName": "Privacy",
+    "route": "/app/settings/privacy",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S14-privacy-desktop.png",
+    "figmaFrameName": "14 Privacy"
+  },
+  {
+    "screenId": "S15",
+    "screenName": "Briefings",
+    "route": "/app/briefings",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S15-briefings-desktop.png",
+    "figmaFrameName": "15 Briefings"
+  },
+  {
+    "screenId": "S16",
+    "screenName": "Briefing Detail",
+    "route": "/app/briefings/demo-briefing-id",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S16-briefing-detail-desktop.png",
+    "figmaFrameName": "16 Briefing Detail"
+  },
+  {
+    "screenId": "S17",
+    "screenName": "Calendar",
+    "route": "/app/calendar",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S17-calendar-desktop.png",
+    "figmaFrameName": "17 Calendar"
+  },
+  {
+    "screenId": "S18",
+    "screenName": "Outbound List",
+    "route": "/app/outbound",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S18-outbound-list-desktop.png",
+    "figmaFrameName": "18 Outbound List"
+  },
+  {
+    "screenId": "S19",
+    "screenName": "Outbound Detail",
+    "route": "/app/outbound/demo-action-id",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S19-outbound-detail-desktop.png",
+    "figmaFrameName": "19 Outbound Detail"
+  },
+  {
+    "screenId": "S20",
+    "screenName": "Philosophy Settings",
+    "route": "/app/settings/philosophy",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S20-philosophy-settings-desktop.png",
+    "figmaFrameName": "20 Philosophy Settings"
+  },
+  {
+    "screenId": "S21",
+    "screenName": "Notifications",
+    "route": "/app/settings/notifications",
+    "viewport": "desktop",
+    "file": "screenshots\\desktop\\S21-notifications-desktop.png",
+    "figmaFrameName": "21 Notifications"
+  }
+]
