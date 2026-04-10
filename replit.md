@@ -110,18 +110,36 @@ GOOGLE_OAUTH_CLIENT_SECRET=...
 
 ---
 
-## What's Been Built (M0 scaffold)
+## What's Been Built (all 21 screens + extras)
 
-- Landing page (/)
+**Public / Marketing**
+- Landing (/)
 - Sign-in phone entry (/sign-in)
 - OTP verify (/sign-in/verify)
-- Dashboard shell (/app)
+- Privacy Policy (/privacy)
+- SMS Terms (/sms-terms)
+
+**Authenticated App**
+- Dashboard (/app)
+- Onboarding welcome (/app/onboarding) — Step 1 of 4
+- Onboarding philosophy chips (/app/onboarding/philosophy) — Step 2 of 4
+- Onboarding family profile (/app/onboarding/family) — Step 3 of 4
+- Onboarding consent gate (/app/onboarding/consent) — Step 4 of 4
+- Family list (/app/family) with Add child / Add contact CTAs
+- Child profile form (/app/family/child/[childId]) — create & edit
+- Contact form (/app/family/contact/[contactId]) — create & edit + TCPA toggle
+- Briefings list (/app/briefings) with empty state
+- Briefing detail (/app/briefings/[briefingId]) with MedicalDisclaimerModal
+- Calendar (/app/calendar) with Google OAuth connect state
+- Outbound list (/app/outbound) with status filter tabs
+- Outbound detail (/app/outbound/[actionId]) with confirm/decline flow + timeline
 - Settings hub (/app/settings)
-- Briefings list (/app/briefings)
-- Family page (/app/family)
-- Calendar page (/app/calendar)
-- Outbound page (/app/outbound)
-- Onboarding welcome (/app/onboarding)
-- Auth middleware (cookie guard)
-- FastAPI stub with health + auth endpoints
-- All shadcn/ui primitive components
+- Settings → Connection (/app/settings/connection)
+- Settings → Privacy & Data (/app/settings/privacy) — export + delete account
+- Settings → Notifications (/app/settings/notifications) — SMS/email toggles
+- Settings → Philosophy (/app/settings/philosophy) — chip editor
+
+**Infrastructure**
+- Auth middleware (cookie guard on all /app/* routes)
+- FastAPI stub (all routes stubbed for development)
+- All shadcn/ui primitive components (Button, Card, Input, Label, Badge, Skeleton, Alert)

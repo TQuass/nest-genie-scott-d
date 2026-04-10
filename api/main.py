@@ -37,6 +37,13 @@ async def logout():
     return {"success": True}
 
 
+@app.get("/api/v1/auth/me")
+async def get_me():
+    return {"phone": "+15555555555", "display_name": "Parent"}
+
+
+# ── Families ────────────────────────────────────────────────────────────────
+
 @app.get("/api/v1/families/me")
 async def get_family():
     return {
@@ -44,7 +51,19 @@ async def get_family():
         "contacts": [],
         "consent_given": True,
         "onboarding_complete": False,
+        "philosophy_hints": [],
+        "philosophy_notes": "",
     }
+
+
+@app.patch("/api/v1/families/me")
+async def patch_family(body: dict):
+    return {"success": True}
+
+
+@app.delete("/api/v1/families/me")
+async def delete_family():
+    return {"success": True}
 
 
 @app.get("/api/v1/families/me/status")
@@ -61,21 +80,187 @@ async def get_family_status():
 @app.get("/api/v1/families/me/connection")
 async def get_connection():
     return {
-        "sms": {"number": "+1 555 555 5555", "status": "active"},
-        "email": {"from": "noreply@nestgenie.com", "status": "active"},
+        "sms": {
+            "number": "+1 555 555 5555",
+            "status": "active",
+            "a2p_status": "approved",
+            "last_inbound": None,
+        },
+        "email": {
+            "from": "noreply@nestgenie.com",
+            "status": "active",
+            "last_delivered": None,
+        },
     }
 
+
+@app.get("/api/v1/families/me/consent")
+async def get_consent():
+    return {"consent_given": True, "consent_at": "2026-04-10T00:00:00Z"}
+
+
+@app.post("/api/v1/families/me/export")
+async def export_data():
+    return {"success": True, "message": "Export queued — download link will be emailed."}
+
+
+@app.get("/api/v1/families/me/notification-preferences")
+async def get_notif_prefs():
+    return {
+        "briefings": {"sms": True, "email": False},
+        "reminders": {"sms": True, "email": False},
+        "outbound_confirmations": {"sms": True, "email": False},
+    }
+
+
+@app.patch("/api/v1/families/me/notification-preferences")
+async def patch_notif_prefs(body: dict):
+    return {"success": True}
+
+
+# ── Children ─────────────────────────────────────────────────────────────────
+
+@app.get("/api/v1/families/me/children")
+async def list_children():
+    return []
+
+
+@app.post("/api/v1/families/me/children")
+async def create_child(body: dict):
+    return {"id": "demo-child-1", **body}
+
+
+@app.get("/api/v1/children/{child_id}")
+async def get_child(child_id: str):
+    return {
+        "id": child_id,
+        "name": "Demo Child",
+        "birth_date": "2020-06-15",
+        "allergies": [],
+        "school": "",
+        "routines": "",
+        "notes": "",
+    }
+
+
+@app.patch("/api/v1/children/{child_id}")
+async def patch_child(child_id: str, body: dict):
+    return {"id": child_id, **body}
+
+
+@app.delete("/api/v1/children/{child_id}")
+async def delete_child(child_id: str):
+    return {"success": True}
+
+
+# ── Contacts ─────────────────────────────────────────────────────────────────
+
+@app.get("/api/v1/families/me/contacts")
+async def list_contacts():
+    return []
+
+
+@app.post("/api/v1/families/me/contacts")
+async def create_contact(body: dict):
+    return {"id": "demo-contact-1", "tcpa_consent": False, **body}
+
+
+@app.get("/api/v1/contacts/{contact_id}")
+async def get_contact(contact_id: str):
+    return {
+        "id": contact_id,
+        "name": "Demo Contact",
+        "relationship": "pediatrician",
+        "phone_e164": "",
+        "tcpa_consent": False,
+    }
+
+
+@app.patch("/api/v1/contacts/{contact_id}")
+async def patch_contact(contact_id: str, body: dict):
+    return {"id": contact_id, **body}
+
+
+@app.delete("/api/v1/contacts/{contact_id}")
+async def delete_contact(contact_id: str):
+    return {"success": True}
+
+
+# ── Briefings ─────────────────────────────────────────────────────────────────
 
 @app.get("/api/v1/briefings")
 async def list_briefings():
     return []
 
 
+@app.get("/api/v1/families/me/briefings")
+async def list_family_briefings():
+    return []
+
+
+@app.get("/api/v1/briefings/{briefing_id}")
+async def get_briefing(briefing_id: str):
+    return {
+        "id": briefing_id,
+        "created_at": "2026-04-10T08:00:00Z",
+        "channel": "sms",
+        "body": "Good morning! Here's your family briefing for today...",
+        "medical_flag": False,
+    }
+
+
+# ── Outbound ──────────────────────────────────────────────────────────────────
+
 @app.get("/api/v1/outbound")
 async def list_outbound():
     return []
 
 
+@app.get("/api/v1/families/me/outbound")
+async def list_family_outbound():
+    return []
+
+
+@app.get("/api/v1/outbound/{action_id}")
+async def get_outbound(action_id: str):
+    return {
+        "id": action_id,
+        "created_at": "2026-04-10T10:00:00Z",
+        "contact_name": "Dr. Smith",
+        "contact_relationship": "pediatrician",
+        "contact_tcpa_consent": True,
+        "draft_text": "Hi Dr. Smith, this is a message on behalf of the family...",
+        "status": "pending",
+    }
+
+
+@app.post("/api/v1/outbound/confirm/{action_id}")
+async def confirm_outbound(action_id: str):
+    return {"success": True}
+
+
+@app.post("/api/v1/outbound/decline/{action_id}")
+async def decline_outbound(action_id: str):
+    return {"success": True}
+
+
+# ── Calendar ──────────────────────────────────────────────────────────────────
+
 @app.get("/api/v1/calendar")
 async def get_calendar():
     return {"connected": False, "events": []}
+
+
+@app.get("/api/v1/families/me/calendar/status")
+async def get_calendar_status():
+    return {"connected": False}
+
+
+@app.get("/api/v1/families/me/calendar/auth")
+async def get_calendar_auth():
+    return {"url": "https://accounts.google.com/o/oauth2/auth?..."}
+
+
+@app.delete("/api/v1/families/me/calendar")
+async def disconnect_calendar():
+    return {"success": True}

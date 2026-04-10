@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  allowedDevOrigins: ["*"],
   async rewrites() {
     return [
       {
@@ -7,10 +8,6 @@ const nextConfig = {
         destination: 'http://localhost:8000/api/v1/:path*',
       },
     ];
-  },
-  // Allow all hosts for Replit proxy
-  async headers() {
-    return [];
   },
 };
 
