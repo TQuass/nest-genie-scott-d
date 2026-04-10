@@ -13,6 +13,11 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { apiClient } from "@/lib/api";
 import { Loader2, Zap, ChevronDown, ChevronUp } from "lucide-react";
 
+async function devLogin(destination: string, router: ReturnType<typeof useRouter>) {
+  await fetch("/api/dev-login", { credentials: "same-origin" });
+  router.push(destination);
+}
+
 const schema = z.object({
   phone: z
     .string()
@@ -120,16 +125,22 @@ export default function SignInPage() {
               These bypass the OTP flow and set a dev auth cookie. For development use only.
             </p>
             <div className="flex flex-col gap-2">
-              <a href="/api/dev-login?redirect=/app" className="block">
-                <Button variant="outline" size="sm" className="w-full border-amber-300 text-amber-800 hover:bg-amber-100">
-                  Sign in as existing user → Dashboard
-                </Button>
-              </a>
-              <a href="/api/dev-login?redirect=/app/onboarding" className="block">
-                <Button variant="outline" size="sm" className="w-full border-amber-300 text-amber-800 hover:bg-amber-100">
-                  Sign up as new user → Onboarding flow
-                </Button>
-              </a>
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full border-amber-300 text-amber-800 hover:bg-amber-100"
+                onClick={() => devLogin("/app", router)}
+              >
+                Sign in as existing user → Dashboard
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full border-amber-300 text-amber-800 hover:bg-amber-100"
+                onClick={() => devLogin("/app/onboarding", router)}
+              >
+                Sign up as new user → Onboarding flow
+              </Button>
             </div>
           </div>
         )}

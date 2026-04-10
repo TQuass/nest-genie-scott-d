@@ -1,10 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const redirect = searchParams.get("redirect") || "/app";
-
-  const response = NextResponse.redirect(new URL(redirect, request.url));
+export async function GET() {
+  const response = NextResponse.json({ ok: true });
 
   response.cookies.set("ng_token", "dev_bypass_token", {
     httpOnly: true,
