@@ -59,7 +59,7 @@ export default function LandingPage() {
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">Daily Briefings</h3>
                 <p className="text-sm text-gray-500">
-                  Morning summaries of your family's schedule, medications, and
+                  Morning summaries of your family&apos;s schedule, medications, and
                   upcoming events — straight to your phone.
                 </p>
               </div>
