@@ -9,6 +9,11 @@
   --primary-light: #C8E6C9;
 }
 
+.dark {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);

@@ -55,8 +55,8 @@ export default function SignInPage() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-900">Sign in to NestGenie</h1>
-        <p className="mt-2 text-sm text-gray-500">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Sign in to NestGenie</h1>
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
           Enter your phone number and we&apos;ll text you a code.
         </p>
       </div>
@@ -65,7 +65,7 @@ export default function SignInPage() {
         <div className="space-y-2">
           <Label htmlFor="phone">Phone number</Label>
           <div className="flex gap-2">
-            <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+            <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-sm">
               🇺🇸 +1
             </span>
             <Input
@@ -77,7 +77,7 @@ export default function SignInPage() {
             />
           </div>
           {errors.phone && (
-            <p className="text-sm text-red-600">{errors.phone.message}</p>
+            <p className="text-sm text-red-600 dark:text-red-400">{errors.phone.message}</p>
           )}
         </div>
 
@@ -95,23 +95,22 @@ export default function SignInPage() {
         </Button>
       </form>
 
-      <p className="text-center text-xs text-gray-400">
+      <p className="text-center text-xs text-gray-400 dark:text-gray-500">
         Code valid for 10 minutes.{" "}
-        <a href="/privacy" className="underline hover:text-gray-600">
+        <a href="/privacy" className="underline hover:text-gray-600 dark:hover:text-gray-300">
           Privacy policy
         </a>{" "}
         ·{" "}
-        <a href="/terms" className="underline hover:text-gray-600">
+        <a href="/terms" className="underline hover:text-gray-600 dark:hover:text-gray-300">
           Terms
         </a>
       </p>
 
-      {/* ── Dev shortcuts ──────────────────────────────────────── */}
-      <div className="border border-amber-200 rounded-lg overflow-hidden">
+      <div className="border border-amber-200 dark:border-amber-800 rounded-lg overflow-hidden">
         <button
           type="button"
           onClick={() => setShowDev(!showDev)}
-          className="w-full flex items-center justify-between px-4 py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-semibold transition-colors"
+          className="w-full flex items-center justify-between px-4 py-2.5 bg-amber-50 dark:bg-amber-950 hover:bg-amber-100 dark:hover:bg-amber-900 text-amber-800 dark:text-amber-300 text-xs font-semibold transition-colors"
         >
           <span className="flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
@@ -120,15 +119,15 @@ export default function SignInPage() {
           {showDev ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
         </button>
         {showDev && (
-          <div className="p-4 space-y-3 bg-amber-50/50">
-            <p className="text-xs text-amber-700">
+          <div className="p-4 space-y-3 bg-amber-50/50 dark:bg-amber-950/50">
+            <p className="text-xs text-amber-700 dark:text-amber-400">
               These bypass the OTP flow and set a dev auth cookie. For development use only.
             </p>
             <div className="flex flex-col gap-2">
               <Button
                 variant="outline"
                 size="sm"
-                className="w-full border-amber-300 text-amber-800 hover:bg-amber-100"
+                className="w-full border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900"
                 onClick={() => devLogin("/app", router)}
               >
                 Sign in as existing user → Dashboard
@@ -136,7 +135,7 @@ export default function SignInPage() {
               <Button
                 variant="outline"
                 size="sm"
-                className="w-full border-amber-300 text-amber-800 hover:bg-amber-100"
+                className="w-full border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900"
                 onClick={() => devLogin("/app/onboarding", router)}
               >
                 Sign up as new user → Onboarding flow

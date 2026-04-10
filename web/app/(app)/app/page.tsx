@@ -37,7 +37,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
           {isLoading ? (
             <Skeleton className="h-8 w-48" />
           ) : (
@@ -47,11 +47,11 @@ export default function DashboardPage() {
       </div>
 
       {data && !data.onboarding_complete && (
-        <Card className="border-[#2E7D32] bg-[#f1f8f1]">
+        <Card className="border-[#2E7D32] bg-[#f1f8f1] dark:bg-[#0d2e0f]">
           <CardContent className="p-4 flex items-center justify-between">
             <div>
-              <p className="font-medium text-[#2E7D32]">Finish setting up your family profile</p>
-              <p className="text-sm text-gray-600 mt-0.5">Complete onboarding to unlock all features.</p>
+              <p className="font-medium text-[#2E7D32] dark:text-[#a5d6a7]">Finish setting up your family profile</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">Complete onboarding to unlock all features.</p>
             </div>
             <Link href="/app/onboarding">
               <Button size="sm" className="shrink-0">
@@ -72,12 +72,12 @@ export default function DashboardPage() {
           ) : (
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Your NestGenie number</p>
-                <p className="font-semibold text-gray-900 mt-0.5">
+                <p className="text-sm text-gray-500 dark:text-gray-400">Your NestGenie number</p>
+                <p className="font-semibold text-gray-900 dark:text-gray-100 mt-0.5">
                   {data?.phone_number || "+1 555 555 5555"}
                 </p>
                 {data?.last_message_at && (
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                     Last message: {new Date(data.last_message_at).toLocaleString()}
                   </p>
                 )}
@@ -97,12 +97,12 @@ export default function DashboardPage() {
             <Link key={item.href} href={item.href}>
               <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
                 <CardContent className="p-4 flex flex-col gap-2">
-                  <div className="w-10 h-10 bg-[#C8E6C9] rounded-lg flex items-center justify-center">
-                    <Icon className="w-5 h-5 text-[#2E7D32]" />
+                  <div className="w-10 h-10 bg-[#C8E6C9] dark:bg-[#1b5e20] rounded-lg flex items-center justify-center">
+                    <Icon className="w-5 h-5 text-[#2E7D32] dark:text-[#a5d6a7]" />
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-900 text-sm">{item.label}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{item.desc}</p>
+                    <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm">{item.label}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{item.desc}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -111,7 +111,7 @@ export default function DashboardPage() {
         })}
       </div>
 
-      <div className="text-center py-8 text-gray-400 text-sm">
+      <div className="text-center py-8 text-gray-400 dark:text-gray-500 text-sm">
         <p>Text NestGenie at <strong>+1 555 555 5555</strong> to get started</p>
       </div>
     </div>
