@@ -6,9 +6,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, MessageSquare, Mail } from "lucide-react";
+import { ArrowLeft, MessageSquare, Mail, LogOut } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface ConnectionStatus {
   sms: {
@@ -34,6 +35,12 @@ export default function ConnectionPage() {
   const overallHealth = data
     ? data.sms.status === "active" && data.email.status === "active"
     : null;
+
+  const handleSignOut = async () => {
+    await fetch("/api/sign-out", { method: "POST", credentials: "same-origin" });
+    toast.success("Signed out");
+    router.push("/sign-in");
+  };
 
   return (
     <div className="space-y-6">
@@ -108,6 +115,17 @@ export default function ConnectionPage() {
           <p className="text-xs text-center text-gray-400">
             <Link href="/sms-terms" className="underline hover:text-gray-600">View SMS terms</Link>
           </p>
+
+          <div className="pt-2 border-t border-gray-100">
+            <Button
+              variant="outline"
+              className="w-full gap-2 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+              onClick={handleSignOut}
+            >
+              <LogOut className="w-4 h-4" />
+              Sign out
+            </Button>
+          </div>
         </div>
       )}
     </div>
