@@ -1,0 +1,599 @@
+{
+  "project": {
+    "name": "NestGenie",
+    "description": "SMS-first AI family assistant. Parents text NestGenie; it responds, sends briefings, manages outbound messages to contacts. Web companion for onboarding, calendar linking, briefings history, and privacy controls.",
+    "platform": "mobile-first web (Next.js 14 App Router)",
+    "primary_channel": "SMS (Twilio)",
+    "web_role": "thin companion — not the primary UX surface",
+    "design_system": "Tailwind + shadcn/ui",
+    "brand_color": "#2E7D32",
+    "brand_color_light": "#C8E6C9",
+    "component_library": "shadcn/ui",
+    "icon_set": "lucide-react"
+  },
+  "tech_stack": {
+    "web": "Next.js 14 App Router, TypeScript, Tailwind CSS, shadcn/ui, TanStack Query, react-hook-form, zod",
+    "api": "FastAPI (Python 3.12), async, ECS Fargate",
+    "database": "PostgreSQL (Aurora Serverless v2 + pgvector)",
+    "auth": "SMS OTP → JWT in httpOnly cookie (no NextAuth, no passwords)",
+    "sms": "Twilio A2P 10DLC",
+    "email": "AWS SES",
+    "ai": "AWS Bedrock — Claude Haiku (classify) → Claude Sonnet (reason) → Claude Opus (high-stakes)",
+    "calendar": "Google Calendar OAuth v3"
+  },
+  "layouts": [
+    {
+      "id": "marketing",
+      "name": "(marketing) layout",
+      "description": "Public unauthenticated pages. Centered single column max-w-md. Sticky header with NestGenie logo.",
+      "routes": ["/", "/sign-in", "/sign-in/verify"]
+    },
+    {
+      "id": "app",
+      "name": "(app) layout",
+      "description": "Authenticated parent experience. Desktop: sidebar nav (256px) + main content max-w-3xl. Mobile: topbar + sticky bottom nav (Home, Family, Briefings, Calendar, Settings). Middleware redirects unauthenticated to /sign-in.",
+      "routes": ["/app/*"]
+    }
+  ],
+  "screen_set": [
+    {
+      "id": "S01",
+      "name": "Landing / marketing home",
+      "route": "/",
+      "layout": "marketing",
+      "milestone": "M0",
+      "priority": "critical",
+      "description": "Public landing page explaining NestGenie. Hero section: 'AI that keeps your family running — just text it.' Explains SMS-first interaction model. Primary CTA: 'Sign in'. No sign-up — parents are added when an admin registers their phone number.",
+      "key_elements": [
+        "Hero headline + subheadline",
+        "SMS-first explanation section with phone number illustration",
+        "3 feature tiles: Daily briefings, Outbound assist, Parenting guidance",
+        "Primary 'Sign in' CTA button (links to /sign-in)",
+        "Footer: Privacy policy link, SMS terms link"
+      ],
+      "api_calls": [],
+      "responsive_notes": "Full-width hero on desktop (max-w-5xl), single column on mobile. No sidebar.",
+      "export": {
+        "size": "1440x900",
+        "filename": "NestGenie_Landing.png"
+      }
+    },
+    {
+      "id": "S02",
+      "name": "Sign-in — phone entry",
+      "route": "/sign-in",
+      "layout": "marketing",
+      "milestone": "M0/M1",
+      "priority": "critical",
+      "description": "Single-field form for phone number entry. Submits to request OTP. Validates E.164 format inline.",
+      "key_elements": [
+        "NestGenie logo/wordmark centered at top",
+        "Heading: 'Sign in to NestGenie'",
+        "PhoneInput component with US flag selector",
+        "'Text me a code' CTA button",
+        "Rate-limit note: 'Code valid for 10 minutes'",
+        "Link to /privacy"
+      ],
+      "api_calls": ["POST /api/v1/auth/request-otp"],
+      "states": ["idle", "loading (after submit)", "error (invalid number / rate limited)"],
+      "responsive_notes": "max-w-sm centered, works at 360px",
+      "export": {
+        "size": "375x812",
+        "filename": "NestGenie_SignIn_Phone.png"
+      }
+    },
+    {
+      "id": "S03",
+      "name": "Sign-in — OTP verify",
+      "route": "/sign-in/verify",
+      "layout": "marketing",
+      "milestone": "M0/M1",
+      "priority": "critical",
+      "description": "6-digit OTP entry. Shows masked phone number. Resend option (rate-limited). On success, redirects to /app or /app/onboarding.",
+      "key_elements": [
+        "Heading: 'Enter your code'",
+        "Subtext: 'Sent to +1 (***) ***-5555'",
+        "OtpInput: 6 individual digit boxes",
+        "Auto-submit when 6 digits entered",
+        "Resend link (disabled for 30s after send)",
+        "Error toast for bad/expired code",
+        "'Change number' link back to /sign-in"
+      ],
+      "api_calls": ["POST /api/v1/auth/verify-otp"],
+      "states": ["idle", "verifying", "error (bad code)", "success (redirect)"],
+      "responsive_notes": "max-w-sm centered",
+      "export": {
+        "size": "375x812",
+        "filename": "NestGenie_SignIn_OTP.png"
+      }
+    },
+    {
+      "id": "S04",
+      "name": "Dashboard shell",
+      "route": "/app",
+      "layout": "app",
+      "milestone": "M0/M1",
+      "priority": "critical",
+      "description": "Main landing page after sign-in. Shows NestGenie status (active phone number + channel health) and quick-link tiles. First-time users see onboarding prompt card.",
+      "key_elements": [
+        "PageHeader: 'Welcome back, [parent name]'",
+        "Status card: NestGenie phone number, last message timestamp, channel health chip (Active/Down)",
+        "5 quick-link tiles: Family, Briefings, Calendar, Outbound, Settings (each with icon + label + brief description)",
+        "First-time banner: 'Finish setting up your family profile' → /app/onboarding (shown if family not complete)",
+        "Empty state if no recent activity"
+      ],
+      "api_calls": ["GET /api/v1/families/me", "GET /api/v1/families/me/status"],
+      "states": ["loaded", "loading (skeleton)", "first-time user (onboarding banner)"],
+      "responsive_notes": "Tiles: 2-col on mobile, 3-col on desktop",
+      "export": {
+        "size": "375x812",
+        "filename": "NestGenie_Dashboard.png"
+      }
+    },
+    {
+      "id": "S05",
+      "name": "Settings shell",
+      "route": "/app/settings",
+      "layout": "app",
+      "milestone": "M0",
+      "priority": "medium",
+      "description": "Settings hub with navigation list to sub-pages. M0 is a shell with links; sub-pages are added in M2/M4.",
+      "key_elements": [
+        "PageHeader: 'Settings'",
+        "Settings nav list: Connection, Privacy & Data, Notifications, Parenting Philosophy",
+        "Each item: icon + label + description + chevron"
+      ],
+      "api_calls": [],
+      "export": {
+        "size": "375x812",
+        "filename": "NestGenie_Settings.png"
+      }
+    },
+    {
+      "id": "S06",
+      "name": "Connection status",
+      "route": "/app/settings/connection",
+      "layout": "app",
+      "milestone": "M1",
+      "priority": "high",
+      "description": "Shows NestGenie's SMS and email channel health. Active phone number, last inbound/outbound, delivery status.",
+      "key_elements": [
+        "PageHeader: 'Connection'",
+        "SMS channel card: active number, A2P status chip, last inbound timestamp",
+        "Email channel card: FROM address, last email delivered timestamp",
+        "Overall health indicator (all green = Active)",
+        "Link to SMS terms (/sms-terms)"
+      ],
+      "api_calls": ["GET /api/v1/families/me/connection"],
+      "export": {
+        "size": "375x812",
+        "filename": "NestGenie_Connection.png"
+      }
+    },
+    {
+      "id": "S07",
+      "name": "Onboarding — welcome",
+      "route": "/app/onboarding",
+      "layout": "app",
+      "milestone": "M2",
+      "priority": "critical",
+      "description": "Step 1 of onboarding wizard. Explains what NestGenie does, tells parent they can do this over SMS or here.",
+      "key_elements": [
+        "Progress indicator: Step 1 of 4",
+        "Illustration or icon: family/home",
+        "Heading: 'Let's set up your family'",
+        "Body: 'You can finish this here or text NestGenie at +1 555 555 5555 anytime.'",
+        "'Get started' CTA → /app/onboarding/philosophy"
+      ],
+      "api_calls": [],
+      "export": {
+        "size": "375x812",
+        "filename": "NestGenie_Onboarding_Welcome.png"
+      }
+    },
+    {
+      "id": "S08",
+      "name": "Onboarding — parenting philosophy",
+      "route": "/app/onboarding/philosophy",
+      "layout": "app",
+      "milestone": "M2",
+      "priority": "high",
+      "description": "Multi-select chips for parenting philosophy. Saves to families.philosophy_hints.",
+      "key_elements": [
+        "Progress indicator: Step 2 of 4",
+        "Heading: 'How do you like to parent?'",
+        "Subtext: 'This helps NestGenie match your style when giving guidance.'",
+        "Chip grid: Attachment, Montessori, Free-range, Positive discipline, Gentle parenting, Structured, Evidence-based, Intuitive, Other",
+        "Free-text 'Tell us more (optional)' textarea",
+        "Skip and Continue CTAs"
+      ],
+      "api_calls": ["PATCH /api/v1/families/me"],
+      "export": {
+        "size": "375x812",
+        "filename": "NestGenie_Onboarding_Philosophy.png"
+      }
+    },
+    {
+      "id": "S09",
+      "name": "Onboarding — family profile",
+      "route": "/app/onboarding/family",
+      "layout": "app",
+      "milestone": "M2",
+      "priority": "critical",
+      "description": "Capture parent display name, children (expandable list), pediatrician contact, allergies.",
+      "key_elements": [
+        "Progress indicator: Step 3 of 4",
+        "Heading: 'Tell us about your family'",
+        "Parent name field",
+        "'Add child' expandable section: name, DOB, allergies/conditions",
+        "'Add pediatrician' expandable: name, phone (used for medical referral drafts)",
+        "Critical allergies textarea (shared household level)"
+      ],
+      "api_calls": ["PATCH /api/v1/families/me", "POST /api/v1/families/me/children", "POST /api/v1/families/me/contacts"],
+      "export": {
+        "size": "375x812",
+        "filename": "NestGenie_Onboarding_Family.png"
+      }
+    },
+    {
+      "id": "S10",
+      "name": "Onboarding — consent",
+      "route": "/app/onboarding/consent",
+      "layout": "app",
+      "milestone": "M2",
+      "priority": "critical",
+      "description": "Privacy consent gate. Cannot complete onboarding without checking. Covers MHMDA and medical disclaimer.",
+      "key_elements": [
+        "Progress indicator: Step 4 of 4",
+        "Heading: 'Before we start'",
+        "Scrollable privacy summary (NOT full legal text — plain English ~200 words)",
+        "MHMDA note: 'NestGenie may process family-related information. It is not a mental health service.'",
+        "Medical disclaimer: 'NestGenie will always suggest you check with your pediatrician for medical questions.'",
+        "Checkbox: 'I understand and agree'",
+        "'Finish' CTA (disabled until checkbox checked)",
+        "Link to full privacy policy (/privacy)"
+      ],
+      "api_calls": ["PATCH /api/v1/families/me — { consent_given: true }"],
+      "states": ["checkbox unchecked (Finish disabled)", "checkbox checked (Finish enabled)", "submitting", "success → /app"],
+      "export": {
+        "size": "375x812",
+        "filename": "NestGenie_Onboarding_Consent.png"
+      }
+    },
+    {
+      "id": "S11",
+      "name": "Family — list",
+      "route": "/app/family",
+      "layout": "app",
+      "milestone": "M2",
+      "priority": "high",
+      "description": "Overview of household: children + contacts. Quick-add buttons.",
+      "key_elements": [
+        "PageHeader: 'Family' + 'Add child' action button",
+        "Children section: FamilyMemberCard per child (name, age, allergies badges)",
+        "Contacts section: FamilyMemberCard per contact (name, relationship, TCPA consent chip)",
+        "Empty state per section",
+        "'Add contact' button"
+      ],
+      "api_calls": ["GET /api/v1/families/me/children", "GET /api/v1/families/me/contacts"],
+      "export": {
+        "size": "375x812",
+        "filename": "NestGenie_Family_List.png"
+      }
+    },
+    {
+      "id": "S12",
+      "name": "Family — child profile",
+      "route": "/app/family/child/[childId]",
+      "layout": "app",
+      "milestone": "M2",
+      "priority": "high",
+      "description": "Create or edit a child record. Name, DOB, allergies, school, routines, notes.",
+      "key_elements": [
+        "PageHeader: 'Add child' or '[child name]'",
+        "ChildProfileForm: name, DOB picker, allergies (tag input), school, routines textarea, notes",
+        "Save + Delete (edit mode only, with confirmation dialog)",
+        "Age computed display: '4 years old (turns 5 in March)'"
+      ],
+      "api_calls": ["GET /api/v1/children/{childId}", "POST /api/v1/families/me/children", "PATCH /api/v1/children/{childId}", "DELETE /api/v1/children/{childId}"],
+      "export": {
+        "size": "375x812",
+        "filename": "NestGenie_Family_Child.png"
+      }
+    },
+    {
+      "id": "S13",
+      "name": "Family — contact",
+      "route": "/app/family/contact/[contactId]",
+      "layout": "app",
+      "milestone": "M2",
+      "priority": "high",
+      "description": "Create or edit a third-party contact. Captures TCPA consent state.",
+      "key_elements": [
+        "PageHeader: 'Add contact' or '[contact name]'",
+        "Fields: name, relationship (select: grandparent, caregiver, daycare, coach, teacher, other), phone (E.164)",
+        "TCPA consent section: 'Has [name] agreed to receive messages from you via NestGenie?' Toggle. If yes: records consent timestamp.",
+        "ContactConsentFlow inline if tcpa_consent being set for first time",
+        "Save + Delete"
+      ],
+      "api_calls": ["GET /api/v1/contacts/{contactId}", "POST /api/v1/families/me/contacts", "PATCH /api/v1/contacts/{contactId}"],
+      "export": {
+        "size": "375x812",
+        "filename": "NestGenie_Family_Contact.png"
+      }
+    },
+    {
+      "id": "S14",
+      "name": "Privacy / consent / data export",
+      "route": "/app/settings/privacy",
+      "layout": "app",
+      "milestone": "M2",
+      "priority": "high",
+      "description": "Privacy controls: view consent, export data, delete account, notification preferences.",
+      "key_elements": [
+        "PageHeader: 'Privacy & Data'",
+        "Consent record card: consent given date, link to full privacy policy",
+        "Data export card: 'Export my data (JSON)' button → triggers async export, emails download link",
+        "Delete data card: 'Delete all my data' (destructive, confirmation dialog with 'Type DELETE to confirm')",
+        "Notification preferences: SMS vs email toggles per type (briefings, reminders, outbound confirmations)"
+      ],
+      "api_calls": [
+        "GET /api/v1/families/me/consent",
+        "POST /api/v1/families/me/export",
+        "DELETE /api/v1/families/me",
+        "PATCH /api/v1/families/me/notification-preferences"
+      ],
+      "export": {
+        "size": "375x812",
+        "filename": "NestGenie_Privacy.png"
+      }
+    },
+    {
+      "id": "S15",
+      "name": "Briefings history",
+      "route": "/app/briefings",
+      "layout": "app",
+      "milestone": "M3",
+      "priority": "high",
+      "description": "Read-only list of last 30 days of briefings NestGenie sent. Filter by date.",
+      "key_elements": [
+        "PageHeader: 'Briefings'",
+        "Date filter: today / this week / this month / all (30d)",
+        "BriefingCard list (paginated, 20 per page)",
+        "Empty state with SMS nudge",
+        "Scroll-to-load-more (cursor pagination)"
+      ],
+      "api_calls": ["GET /api/v1/families/me/briefings?cursor=&limit=20&since="],
+      "export": {
+        "size": "375x812",
+        "filename": "NestGenie_Briefings.png"
+      }
+    },
+    {
+      "id": "S16",
+      "name": "Briefing detail",
+      "route": "/app/briefings/[briefingId]",
+      "layout": "app",
+      "milestone": "M3",
+      "priority": "high",
+      "description": "Full briefing text. Medical-flag overlay if applicable. Channel chip. Citations after M4.",
+      "key_elements": [
+        "PageHeader: briefing date + channel chip (SMS / Email)",
+        "If medical_flag: MedicalDisclaimerModal shown first",
+        "Full briefing body (markdown rendered)",
+        "KB-grounded answer component (M4 addition): inline citations with source title + philosophy tag chip",
+        "Medical flag indicator if flagged",
+        "← Back to briefings"
+      ],
+      "api_calls": ["GET /api/v1/briefings/{briefingId}"],
+      "states": ["loading", "medical_flag modal", "content displayed"],
+      "export": {
+        "size": "375x812",
+        "filename": "NestGenie_BriefingDetail.png"
+      }
+    },
+    {
+      "id": "S17",
+      "name": "Calendar — connect",
+      "route": "/app/calendar",
+      "layout": "app",
+      "milestone": "M3",
+      "priority": "high",
+      "description": "Google Calendar OAuth connect/disconnect and sync status.",
+      "key_elements": [
+        "PageHeader: 'Calendar'",
+        "CalendarConnectionCard: disconnected state → 'Connect Google Calendar' button (initiates OAuth)",
+        "Connected state: last sync timestamp, scopes granted, event count synced, 'Disconnect' CTA",
+        "Note: 'NestGenie reads your primary calendar to include events in your daily briefings.'"
+      ],
+      "api_calls": [
+        "GET /api/v1/families/me/calendar/status",
+        "GET /api/v1/families/me/calendar/auth (returns OAuth URL)",
+        "DELETE /api/v1/families/me/calendar (disconnect)"
+      ],
+      "states": ["disconnected", "connecting (OAuth redirect)", "connected", "error"],
+      "export": {
+        "size": "375x812",
+        "filename": "NestGenie_Calendar.png"
+      }
+    },
+    {
+      "id": "S18",
+      "name": "Outbound audit log — list",
+      "route": "/app/outbound",
+      "layout": "app",
+      "milestone": "M3",
+      "priority": "high",
+      "description": "Read-only audit log of all outbound AI-drafted messages (to third-party contacts). Shows draft → approved → sent trail.",
+      "key_elements": [
+        "PageHeader: 'Outbound messages'",
+        "Filter tabs: All / Pending / Sent / Declined",
+        "OutboundActionRow list per action",
+        "Pending items have 'Review & approve' CTA → opens ConfirmSendSheet",
+        "Empty state"
+      ],
+      "api_calls": ["GET /api/v1/families/me/outbound?status=&cursor=&limit=20"],
+      "export": {
+        "size": "375x812",
+        "filename": "NestGenie_Outbound.png"
+      }
+    },
+    {
+      "id": "S19",
+      "name": "Outbound audit log — detail",
+      "route": "/app/outbound/[actionId]",
+      "layout": "app",
+      "milestone": "M3",
+      "priority": "medium",
+      "description": "Full trail for one outbound action. Draft → confirmed → sent chain with timestamps.",
+      "key_elements": [
+        "PageHeader: 'To: [contact name]' + status badge",
+        "Timeline: Queued → Draft generated (by NestGenie) → Parent confirmed → Sent",
+        "Draft text block",
+        "Contact name + relationship + consent status",
+        "Timestamps for each step",
+        "If pending: ConfirmSendSheet trigger button"
+      ],
+      "api_calls": ["GET /api/v1/outbound/{actionId}"],
+      "export": {
+        "size": "375x812",
+        "filename": "NestGenie_OutboundDetail.png"
+      }
+    },
+    {
+      "id": "S20",
+      "name": "Parenting philosophy selector",
+      "route": "/app/settings/philosophy",
+      "layout": "app",
+      "milestone": "M4",
+      "priority": "medium",
+      "description": "Settings page to edit parenting philosophy chips post-onboarding.",
+      "key_elements": [
+        "PageHeader: 'Parenting philosophy'",
+        "Same chip grid as onboarding step S08",
+        "Free-text textarea",
+        "Save button",
+        "Note: 'NestGenie uses this to match its guidance to your parenting style.'"
+      ],
+      "api_calls": ["GET /api/v1/families/me", "PATCH /api/v1/families/me"],
+      "export": {
+        "size": "375x812",
+        "filename": "NestGenie_Philosophy.png"
+      }
+    },
+    {
+      "id": "S21",
+      "name": "Notification preferences",
+      "route": "/app/settings/notifications",
+      "layout": "app",
+      "milestone": "M2",
+      "priority": "medium",
+      "description": "Toggle SMS vs email per notification type. No push in MVP.",
+      "key_elements": [
+        "PageHeader: 'Notifications'",
+        "Section per type: Daily briefings, Reminders, Outbound confirmations",
+        "Each: SMS toggle + email toggle (at least one required)",
+        "Note: 'Push notifications coming soon'",
+        "Save changes button"
+      ],
+      "api_calls": ["GET /api/v1/families/me/notification-preferences", "PATCH /api/v1/families/me/notification-preferences"],
+      "export": {
+        "size": "375x812",
+        "filename": "NestGenie_Notifications.png"
+      }
+    }
+  ],
+  "data_model": {
+    "key_tables": [
+      {
+        "table": "families",
+        "key_columns": ["id (uuid)", "name", "timezone", "plan_tier (free|pro)", "philosophy_hints (text[])", "consent_given (bool)", "consent_at (timestamp)"]
+      },
+      {
+        "table": "parents",
+        "key_columns": ["id (uuid)", "family_id (fk)", "phone_e164", "email", "display_name", "is_primary (bool)"]
+      },
+      {
+        "table": "children",
+        "key_columns": ["id (uuid)", "family_id (fk)", "name", "birth_date", "interests (text[])", "allergies (text[])", "school", "routines"]
+      },
+      {
+        "table": "contacts",
+        "key_columns": ["id (uuid)", "family_id (fk)", "name", "relationship", "phone_e164", "tcpa_consent (bool)", "consent_at (timestamp)"]
+      },
+      {
+        "table": "conversations",
+        "key_columns": ["id (uuid)", "family_id (fk)", "parent_id (fk)", "channel (sms|email|web)", "started_at", "expires_at"]
+      },
+      {
+        "table": "messages",
+        "key_columns": ["id (uuid)", "conversation_id (fk)", "role (user|assistant)", "content_raw", "content_redacted", "intent_label", "medical_flag (bool)", "embedding (vector)"]
+      },
+      {
+        "table": "outbound_queue",
+        "key_columns": ["id (uuid)", "family_id (fk)", "contact_id (fk)", "draft_body", "status (pending|confirmed|sent|declined)", "confirmed_at", "sent_at"]
+      },
+      {
+        "table": "briefings",
+        "key_columns": ["id (uuid)", "family_id (fk)", "channel", "body", "medical_flag (bool)", "scheduled_for", "delivered_at"]
+      },
+      {
+        "table": "consent_records",
+        "key_columns": ["id (uuid)", "family_id (fk)", "consent_type (privacy|mhmda|tcpa)", "version", "granted (bool)", "granted_at", "ip_hash"]
+      }
+    ]
+  },
+  "key_api_routes": {
+    "auth": [
+      "POST /api/v1/auth/request-otp",
+      "POST /api/v1/auth/verify-otp",
+      "POST /api/v1/auth/logout",
+      "GET /api/v1/auth/me"
+    ],
+    "families": [
+      "GET /api/v1/families/me",
+      "PATCH /api/v1/families/me",
+      "GET /api/v1/families/me/status",
+      "GET /api/v1/families/me/connection",
+      "POST /api/v1/families/me/export",
+      "DELETE /api/v1/families/me",
+      "GET /api/v1/families/me/notification-preferences",
+      "PATCH /api/v1/families/me/notification-preferences",
+      "GET /api/v1/families/me/consent"
+    ],
+    "children": [
+      "GET /api/v1/families/me/children",
+      "POST /api/v1/families/me/children",
+      "GET /api/v1/children/{childId}",
+      "PATCH /api/v1/children/{childId}",
+      "DELETE /api/v1/children/{childId}"
+    ],
+    "contacts": [
+      "GET /api/v1/families/me/contacts",
+      "POST /api/v1/families/me/contacts",
+      "GET /api/v1/contacts/{contactId}",
+      "PATCH /api/v1/contacts/{contactId}",
+      "DELETE /api/v1/contacts/{contactId}"
+    ],
+    "briefings": [
+      "GET /api/v1/families/me/briefings",
+      "GET /api/v1/briefings/{briefingId}"
+    ],
+    "outbound": [
+      "GET /api/v1/families/me/outbound",
+      "GET /api/v1/outbound/{actionId}",
+      "POST /api/v1/outbound/confirm/{actionId}",
+      "POST /api/v1/outbound/decline/{actionId}"
+    ],
+    "calendar": [
+      "GET /api/v1/families/me/calendar/status",
+      "GET /api/v1/families/me/calendar/auth",
+      "DELETE /api/v1/families/me/calendar"
+    ],
+    "sms_webhook": [
+      "POST /webhooks/sms (Twilio)",
+      "POST /webhooks/sms/status (delivery receipts)"
+    ]
+  },
+  "agent_kickoff_message": "You are starting NestGenie — an SMS-first AI family assistant. The primary interaction is via SMS (Twilio); the web companion (Next.js 14) is a thin authenticated surface for onboarding, family profile, briefings history, outbound audit, calendar linking, and privacy controls.\n\nYour tasks:\n1. Scaffold the monorepo: `/web` (Next.js 14 App Router + TypeScript + Tailwind + shadcn/ui) and `/api` (FastAPI Python 3.12 async)\n2. Set up the two layouts: `(marketing)` for public pages and `(app)` for authenticated pages with middleware auth guard\n3. Build M0 screens first: Landing (/), Sign-in phone (/sign-in), Sign-in OTP (/sign-in/verify), Dashboard shell (/app), Settings shell (/app/settings)\n4. Wire auth: POST /auth/request-otp → POST /auth/verify-otp → httpOnly JWT cookie (no NextAuth, no passwords)\n5. Create Alembic migrations for families, parents, children, contacts, conversations, messages\n\nDesign rules: green brand (#2E7D32), shadcn/ui components, mobile-first (min 360px), empty states with SMS nudge, TanStack Query for all data fetching, react-hook-form + zod for all forms.\n\nSee replit.md for complete rules, design-system/guide.md for palette and layout, design-system/components.md for component inventory, and screen-specs/request.json for per-screen specs and API routes.\n\nDo NOT build: native apps, push notifications, admin console, voice channels, Apple/Outlook calendar, dark mode, consumer billing (CB add-on is a separate sprint)."
+}
