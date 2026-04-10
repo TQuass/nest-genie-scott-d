@@ -110,6 +110,39 @@ GOOGLE_OAUTH_CLIENT_SECRET=...
 
 ---
 
+## Lessons Learned — Replit + Next.js Deployment Gotchas
+
+> Keep this section for future Claude sessions on this project.
+
+### 1. Backend workflow must be explicitly configured
+Replit only runs ONE workflow by default. The FastAPI backend on port 8000 was never started, causing `ECONNREFUSED` on every API call. **Fix on day one:** add a second workflow (`cd api && uvicorn main:app --reload --host 0.0.0.0 --port 8000`, outputType `console`, waitForPort 8000).
+
+### 2. Root `package.json` is required for deployment
+When the frontend lives in a subdirectory (`web/`), the Replit deployment system looks for `package.json` at the repo root before running any custom build command. Without a root `package.json`, the build fails with "npm cannot find package.json". **Fix:** create a minimal root `package.json` whose `build` and `start` scripts delegate to the subdirectory (`cd web && npm ...`).
+
+### 3. Deployment build/run commands must be set explicitly
+Even when `.replit` has `[deployment]` values, the UI may show "No build command configured" on a fresh deploy. Always verify the commands are set with `deployConfig()` and confirm them in the `.replit` file before deploying.
+
+### 4. ESLint blocks the production build
+`next build` runs ESLint and TypeScript checks. Two patterns reliably fail:
+- **Unescaped apostrophes in JSX text** — use `&apos;` (e.g. `family&apos;s`)
+- **Empty interface declarations** — convert `interface Foo extends Bar {}` to `type Foo = Bar`
+Run `npx next lint` locally before every deploy attempt.
+
+### 5. `middleware.ts` encoding corruption
+The middleware file developed invisible invalid UTF-8 bytes (likely from a copy-paste or prior edit tool issue). The symptom is a webpack "cannot read file" error at build time even though the file looks normal. **Fix:** delete the file and recreate it from scratch — do not copy-paste from the broken version.
+
+### 6. Dev bypass must use `fetch` + `router.push`, not `<a href>` or server redirects
+The Replit proxy (mTLS iframe) breaks server-side `redirect()` and standard `<a href>` navigation for auth flows. The dev OTP bypass must call `fetch("/api/dev-login")` and then use Next.js `router.push()` client-side.
+
+### 7. `suppressHydrationWarning` is required on `<html>` with `next-themes`
+Without it, the server renders without a theme class while the client adds `class="dark"`, causing a hydration mismatch warning. Always add `suppressHydrationWarning` to the root `<html>` tag when using `next-themes`.
+
+### 8. CORS wildcard + `allow_credentials=False`
+FastAPI CORS with `allow_origins=["*"]` **must** also set `allow_credentials=False` — using wildcard origins with credentials enabled is rejected by the browser. Since the Next.js proxy forwards API requests server-side, credentials on the backend CORS are unnecessary anyway.
+
+---
+
 ## What's Been Built (all 21 screens + extras)
 
 **Public / Marketing**
