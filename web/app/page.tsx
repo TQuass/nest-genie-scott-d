@@ -93,6 +93,7 @@ export default function LandingPage() {
           <span>&copy; {new Date().getFullYear()} NestGenie</span>
           <div className="flex gap-6">
             <Link href="/privacy" className="hover:text-gray-600">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-gray-600">Terms of Service</Link>
             <Link href="/sms-terms" className="hover:text-gray-600">SMS Terms</Link>
           </div>
         </div>

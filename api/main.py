@@ -209,6 +209,11 @@ async def get_briefing(briefing_id: str):
     }
 
 
+@app.delete("/api/v1/briefings/{briefing_id}")
+async def delete_briefing(briefing_id: str):
+    return {"success": True}
+
+
 # ── Outbound ──────────────────────────────────────────────────────────────────
 
 @app.get("/api/v1/outbound")

@@ -114,9 +114,10 @@ GOOGLE_OAUTH_CLIENT_SECRET=...
 
 **Public / Marketing**
 - Landing (/)
-- Sign-in phone entry (/sign-in)
+- Sign-in phone entry (/sign-in) — with dev bypass shortcuts panel
 - OTP verify (/sign-in/verify)
 - Privacy Policy (/privacy)
+- Terms of Service (/terms) — covers ToS + EULA (no separate EULA needed for SaaS)
 - SMS Terms (/sms-terms)
 
 **Authenticated App**
@@ -138,6 +139,16 @@ GOOGLE_OAUTH_CLIENT_SECRET=...
 - Settings → Privacy & Data (/app/settings/privacy) — export + delete account
 - Settings → Notifications (/app/settings/notifications) — SMS/email toggles
 - Settings → Philosophy (/app/settings/philosophy) — chip editor
+
+**Dev tools**
+- `/api/dev-login?redirect=/app` — sets auth cookie, skips OTP, goes to dashboard
+- `/api/dev-login?redirect=/app/onboarding` — sets auth cookie, skips OTP, goes to onboarding
+
+**CRUD coverage**
+- Children: List, Create (/family/child/new), View+Edit (/family/child/[id]), Delete with confirm
+- Contacts: List, Create (/family/contact/new), View+Edit (/family/contact/[id]), Delete with confirm
+- Briefings: List, View (/briefings/[id]), Delete with inline confirm (AI-generated, no create/edit by design)
+- Outbound: List, View (/outbound/[id]), Approve + Decline (AI-generated, no create/edit by design)
 
 **Infrastructure**
 - Auth middleware (cookie guard on all /app/* routes)

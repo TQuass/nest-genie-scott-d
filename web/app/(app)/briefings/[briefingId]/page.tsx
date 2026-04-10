@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { apiClient } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, AlertTriangle, X } from "lucide-react";
+import { ArrowLeft, AlertTriangle, Trash2, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 
 interface Briefing {
@@ -45,11 +46,23 @@ function MedicalDisclaimerModal({ onDismiss }: { onDismiss: () => void }) {
 export default function BriefingDetailPage() {
   const { briefingId } = useParams<{ briefingId: string }>();
   const router = useRouter();
+  const qc = useQueryClient();
   const [disclaimerDismissed, setDisclaimerDismissed] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const { data, isLoading } = useQuery<Briefing>({
     queryKey: ["briefing", briefingId],
     queryFn: () => apiClient.get<Briefing>(`/briefings/${briefingId}`),
+  });
+
+  const { mutate: del, isPending: deleting } = useMutation({
+    mutationFn: () => apiClient.delete(`/briefings/${briefingId}`),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["briefings"] });
+      toast.success("Briefing deleted.");
+      router.push("/app/briefings");
+    },
+    onError: () => toast.error("Could not delete. Try again."),
   });
 
   const showDisclaimer = data?.medical_flag && !disclaimerDismissed;
@@ -83,12 +96,44 @@ export default function BriefingDetailPage() {
             </div>
           )}
         </div>
+        {!isLoading && data && (
+          !confirmDelete ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-gray-400 hover:text-red-500 shrink-0"
+              onClick={() => setConfirmDelete(true)}
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
+          ) : (
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="text-xs text-red-600 font-medium">Delete?</span>
+              <Button
+                size="sm"
+                className="h-7 text-xs bg-red-500 hover:bg-red-600"
+                onClick={() => del()}
+                disabled={deleting}
+              >
+                {deleting ? <Loader2 className="w-3 h-3 animate-spin" /> : "Yes"}
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-7 text-xs"
+                onClick={() => setConfirmDelete(false)}
+              >
+                No
+              </Button>
+            </div>
+          )
+        )}
       </div>
 
       {isLoading ? (
         <div className="space-y-3">
           {[1, 2, 3, 4, 5].map((i) => (
-            <Skeleton key={i} className="h-4 w-full" style={{ width: `${70 + i * 5}%` }} />
+            <Skeleton key={i} className="h-4" style={{ width: `${70 + i * 5}%` }} />
           ))}
         </div>
       ) : (
